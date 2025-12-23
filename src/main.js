@@ -34,15 +34,25 @@ let foodMeshes = {};
 let arenaSize = 200;
 
 // UI
-const uiScore = document.querySelector('#score-board span');
-const uiFinalScore = document.querySelector('#final-score');
-const screenStart = document.getElementById('start-screen');
-const screenGameOver = document.getElementById('game-over-screen');
-const btnStart = document.getElementById('start-btn');
-const btnRestart = document.getElementById('restart-btn');
+let uiScore, uiFinalScore, screenStart, screenGameOver, btnStart, btnRestart;
+
+function setupUI() {
+    uiScore = document.querySelector('#score-board span');
+    uiFinalScore = document.querySelector('#final-score');
+    screenStart = document.getElementById('start-screen');
+    screenGameOver = document.getElementById('game-over-screen');
+    btnStart = document.getElementById('start-btn');
+    btnRestart = document.getElementById('restart-btn');
+
+    if (btnStart) btnStart.addEventListener('click', startGame);
+    if (btnRestart) btnRestart.addEventListener('click', startGame);
+    
+    console.log('UI Setup complete', { btnStart: !!btnStart });
+}
 
 // --- Init ---
 function init() {
+    setupUI();
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x1a1a2e);
     scene.fog = new THREE.Fog(0x1a1a2e, 20, 150);
@@ -420,8 +430,6 @@ function render() {
     renderer.render(scene, camera);
 }
 
-// UI
-btnStart.addEventListener('click', startGame);
-btnRestart.addEventListener('click', startGame);
+// UI - listeners moved to setupUI()
 
 init();
