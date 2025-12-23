@@ -3,9 +3,9 @@ import * as THREE from 'three';
 import { io } from 'socket.io-client';
 
 // --- Constants ---
-const SERVER_URL = import.meta.env.VITE_API_URL || (window.location.port === '5173' 
-    ? 'http://localhost:3000' 
-    : window.location.origin);
+const SERVER_URL = (import.meta.env && import.meta.env.VITE_API_URL) 
+    ? import.meta.env.VITE_API_URL 
+    : (window.location.port === '5173' ? 'http://localhost:3000' : window.location.origin);
 const CAMERA_HEIGHT = 40;
 
 // --- Global Variables ---
@@ -101,17 +101,28 @@ function createFloor(size) {
 }
 
 function connectSocket() {
+    console.log('Connecting to server at:', SERVER_URL);
     socket = io(SERVER_URL, {
         reconnectionAttempts: 5,
         transports: ['polling', 'websocket']
     });
 
     socket.on('connect', () => {
-        console.log('Connected to server');
+        console.log('Connected to server with ID:', socket.id);
         myId = socket.id;
     });
 
+    socket.on('connect_error', (error) => {
+        console.error('Socket Connection Error:', error);
+        // If connection fails, show a hint to the user
+        const startBtn = document.getElementById('start-btn');
+        if (startBtn) startBtn.innerText = 'Connecting... (Server waking up?)';
+    });
+
     socket.on('init', (data) => {
+        console.log('Game initialized');
+        const startBtn = document.getElementById('start-btn');
+        if (startBtn) startBtn.innerText = 'Start Game';
         myId = data.id;
         createFloor(data.arenaSize);
     });
