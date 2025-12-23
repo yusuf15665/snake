@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Snake.io 3D</title>
+  </head>
+  <body>
+    <div id="game-container"></div>
+    
+    <div id="ui-layer">
+      <div id="score-board">Length: <span>10</span></div>
+      
+      <div id="game-over-screen" class="hidden">
+        <h1>GAME OVER</h1>
+        <p>Final Length: <span id="final-score">0</span></p>
+        <button id="restart-btn">Play Again</button>
+      </div>
+
+      <div id="start-screen">
+        <h1>SNAKE.IO 3D</h1>
+        <p>Move with your mouse. Click to boost.</p>
+        <button id="start-btn">Start Game</button>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
