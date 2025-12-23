@@ -154,9 +154,21 @@ function connectSocket() {
 }
 
 function startGame() {
-    socket.emit('joinGame', 'Player');
-    screenStart.classList.add('hidden');
-    screenGameOver.classList.add('hidden');
+    console.log('Starting game...');
+    if (socket && socket.connected) {
+        // Clear local mesh if it exists
+        if (myId && playerMeshes[myId]) {
+            removePlayer(myId);
+        }
+        
+        socket.emit('joinGame', 'Player');
+        screenStart.classList.add('hidden');
+        screenGameOver.classList.add('hidden');
+        uiScore.innerText = '0';
+    } else {
+        console.warn('Socket not connected yet');
+        alert('Still connecting to server... please wait.');
+    }
 }
 
 // --- Rendering & Logic ---
