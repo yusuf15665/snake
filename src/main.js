@@ -101,22 +101,39 @@ function createFloor(size) {
 }
 
 function connectSocket() {
+    const statusText = document.getElementById('status-text');
     console.log('Connecting to server at:', SERVER_URL);
+    
     socket = io(SERVER_URL, {
-        reconnectionAttempts: 5,
-        transports: ['polling', 'websocket']
+        reconnectionAttempts: 10,
+        transports: ['polling', 'websocket'],
+        timeout: 20000
     });
 
     socket.on('connect', () => {
         console.log('Connected to server with ID:', socket.id);
+        if (statusText) {
+            statusText.innerText = 'Connected';
+            statusText.style.color = '#00ff00';
+        }
         myId = socket.id;
     });
 
     socket.on('connect_error', (error) => {
         console.error('Socket Connection Error:', error);
-        // If connection fails, show a hint to the user
+        if (statusText) {
+            statusText.innerText = 'Server sleeping... waking it up (30s)';
+            statusText.style.color = '#ffaa00';
+        }
         const startBtn = document.getElementById('start-btn');
-        if (startBtn) startBtn.innerText = 'Connecting... (Server waking up?)';
+        if (startBtn) startBtn.innerText = 'Connecting...';
+    });
+
+    socket.on('disconnect', () => {
+        if (statusText) {
+            statusText.innerText = 'Disconnected';
+            statusText.style.color = '#ff0000';
+        }
     });
 
     socket.on('init', (data) => {
